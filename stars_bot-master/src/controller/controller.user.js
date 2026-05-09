@@ -298,56 +298,8 @@ class ControllerUser {
             await this.payUserBalanceWithUsername(ctx, username);
 
         } catch (error) {
-            await ctx.answerCbQuery(t('unknow_error'), { show_alert: true });
-        } finally {
-            ctx.session.is_processing = false;
-        }
-    }
-
-    async payUserBalance(ctx) {
-        const user = ctx.session.user;
-        const t = ctx.i18n.t;
-
-        // If already processing, ignore further clicks
-        if (ctx.session.is_processing) {
-            await ctx.answerCbQuery(t('wait_for_process_to_finish'), { show_alert: true });
-            return;
-        }
-
-        ctx.session.is_processing = true;
-
-        try {
-            const [_, quantity] = ctx.update.callback_query.data.split('.');
-
-            const balance = await serviceUsers.readUserBalance(user.id);
-            const retrieving_balance = quantity === 'all' ? balance : +quantity;
-
-            if (
-                retrieving_balance < BALANCE_RETRIEVE_OPTIONS[0] ||
-                retrieving_balance > balance
-            ) {
-                await ctx.answerCbQuery(t('balance_not_enough'), { show_alert: true });
-                return;
-            }
-
-            const username = ctx.update.callback_query.from.username;
-            if (!username) {
-                await ctx.answerCbQuery(t('cannot_get_username'), { show_alert: true });
-                return;
-            }
-
-            this.addUserStep(ctx, {
-                key: userSteps.PAY_RETRIEVING_BALANCE,
-                quantity: retrieving_balance,
-            });
-
-            // This is the main async operation
-            await this.payUserBalanceWithUsername(ctx, username);
-
-        } catch (error) {
             console.error('Error in payUserBalance:', error);
             await ctx.answerCbQuery(t('unknow_error'), { show_alert: true });
-
         } finally {
             ctx.session.is_processing = false;
         }

@@ -7,12 +7,14 @@ const apiFragment = axios.create({
 
 apiFragment.defaults.headers.common['api-key'] = `b53882bb-dfe7-4b12-8752-aa3a9c9496ec`;
 
-// Fragment API for premium
+// Fragment API for premium and stars
 const fragmentApiInstance = axios.create({
     baseURL: fragmentApi.BASE_URL,
 });
 
-fragmentApiInstance.defaults.headers.common['Authorization'] = `Bearer ${fragmentApi.API_KEY}`;
+if (fragmentApi.API_KEY) {
+    fragmentApiInstance.defaults.headers.common['Authorization'] = `Bearer ${fragmentApi.API_KEY}`;
+}
 fragmentApiInstance.defaults.headers.common['Content-Type'] = 'application/json';
 
 class HelpersHttp {

@@ -49,6 +49,6 @@ module.exports = {
 
     fragmentApi: {
         BASE_URL: "https://fragment-api.com",
-        API_KEY: "14dcc4ce-2db9-4170-a5f2-c3f8e25273da", // Replace with your actual API key
+        API_KEY: process.env.FRAGMENT_API_KEY || "",
     },
 };
