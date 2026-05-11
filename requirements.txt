@@ -1,0 +1,19 @@
+
+# Telegram bot
+aiogram==3.15.0
+
+# Fragment API (Stars va Premium sotib olish)
+pyfragment
+
+# Click to'lov tizimi (webhook server)
+click-pkg[fastapi]
+
+# Web server (Click webhook uchun)
+fastapi
+uvicorn[standard]
+
+# HTTP client
+httpx
+
+# Env
+python-dotenv
