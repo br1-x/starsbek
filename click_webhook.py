@@ -89,22 +89,17 @@ async def _notify_user(tg_id: int, text: str) -> None:
 
 
 # ── To'lov linki ──────────────────────────────────────────────────────────────
-def _build_pay_link(order_id: int, amount: int, merchant_user_id: int = None) -> str:
+def _build_pay_link(order_id: int, amount: int) -> str:
     """
     Click to'lov linkini yaratadi.
-    Sizning formatga mos: 
-    https://my.click.uz/services/pay?service_id=82879&merchant_id=46106&merchant_user_id=64076&amount=109000&transaction_param=10668&return_url=https://t.me/uzs_stars_bot?start=click
+    Ishlaydigan format (do'stingiznikiga o'xshash):
+    https://my.click.uz/services/pay?service_id=77133&merchant_id=41830&amount=22000.00&transaction_param=13156&return_url=https://t.me/StarsBazaar_Bot
     """
-    # Agar merchant_user_id berilmagan bo'lsa, order_id dan foydalanish
-    if merchant_user_id is None:
-        merchant_user_id = order_id
-    
     return (
         f"https://my.click.uz/services/pay"
         f"?service_id={CLICK_SERVICE_ID}"
         f"&merchant_id={CLICK_MERCHANT_ID}"
-        f"&merchant_user_id={merchant_user_id}"
-        f"&amount={amount}"
+        f"&amount={amount}.00"
         f"&transaction_param={order_id}"
         f"&return_url={CLICK_RETURN_URL}"
     )
@@ -207,29 +202,22 @@ async def click_webhook(request: Request):
 
 # ── To'lov linki generatsiya ──────────────────────────────────────────────────
 @app.get("/click/pay_link")
-async def generate_pay_link(tg_id: int, amount: int, merchant_user_id: int = None):
+async def generate_pay_link(tg_id: int, amount: int):
     """
     Bot bu endpointga murojaat qilib Click to'lov linki oladi.
-    merchant_user_id parametri ixtiyoriy - agar berilmasa order_id ishlatiladi.
+    Do'stingizning ishlaydigan formatiga o'xshash link yaratadi.
     """
     if amount < 1000:
         return JSONResponse({"error": "Minimal miqdor 1000 so'm"}, status_code=400)
 
     order_id = db.create_click_order(tg_id, amount)
-    
-    # merchant_user_id ni aniqlash
-    if merchant_user_id is None:
-        # Agar berilmagan bo'lsa, tg_id yoki order_id dan foydalanish mumkin
-        merchant_user_id = tg_id  # yoki order_id
-    
-    pay_link = _build_pay_link(order_id, amount, merchant_user_id)
+    pay_link = _build_pay_link(order_id, amount)
 
-    log.info(f"🔗 To'lov linki: order={order_id}, tg_id={tg_id}, amount={amount}, merchant_user_id={merchant_user_id}")
+    log.info(f"🔗 To'lov linki: order={order_id}, tg_id={tg_id}, amount={amount}")
     return JSONResponse({
         "order_id": order_id, 
         "pay_link": pay_link, 
-        "amount": amount,
-        "merchant_user_id": merchant_user_id
+        "amount": amount
     })
 
 
