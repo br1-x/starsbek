@@ -52,7 +52,7 @@ async def buy_stars(recipient: str, amount: int) -> dict:
             result = await client.purchase_stars(
                 recipient,
                 amount=amount,
-                payment_method="usdt_ton"   # TON/USDT bilan to'lov
+                payment_method="ton"   # TON/USDT bilan to'lov
             )
         log.info(
             f"✅ Stars yuborildi: {amount} → {recipient} | tx: {result.transaction_id}"
