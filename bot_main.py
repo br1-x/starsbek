@@ -198,9 +198,6 @@ def _main_menu_kb() -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(text=" TOP", callback_data="menu:top", icon_custom_emoji_id="5188344996356448758"),
         ],
-        [
-            InlineKeyboardButton(text=" TEKIN STARS", callback_data="menu:referal", icon_custom_emoji_id="5285530266494868522"),
-        ],
     ])
 
 
@@ -655,13 +652,13 @@ async def _show_confirm(message: Message, state: FSMContext, user_id: int = None
         await state.clear()
     else:
         text = (
-            f"<tg-emoji emoji-id='5461114091537989303'>�</tg-emoji> Qabul qiluvchi: `{recipient}`\n"
+            f"Qabul qiluvchi: `{recipient}`\n"
             f"{product_text}\n\n"
             f"💰 Narxi: *{format_currency(cost_uzs)}*\n"
             f"💳 Balansingiz: *{format_currency(user_balance)}*"
         )
         await message.answer(text, parse_mode="Markdown", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="✅ Tasdiqlash", callback_data="confirm:send", icon_custom_emoji_id="5215470137192229422", style="success")],
+            [InlineKeyboardButton(text="Tasdiqlash", callback_data="confirm:send", icon_custom_emoji_id="5215470137192229422", style="success")],
             [InlineKeyboardButton(text="Bekor qilish", callback_data="nav:cancel", icon_custom_emoji_id="5210952531676504517", style="danger")],
         ]))
         await state.set_state(OrderFlow.confirming)
@@ -732,7 +729,7 @@ async def on_confirm_send(call: CallbackQuery, state: FSMContext) -> None:
 
             await call.message.answer(
                 f"✅ *Buyurtma muvaffaqiyatli!*\n\n"
-                f"<tg-emoji emoji-id='5461114091537989303'>�</tg-emoji> Qabul qiluvchi: {recipient}\n"
+                f"Qabul qiluvchi: {recipient}\n"
                 f"💰 Narx: {format_currency(cost_uzs)}\n"
                 f"💳 Qolgan balans: {format_currency(db.get_balance(user_id))}",
                 parse_mode="Markdown",
